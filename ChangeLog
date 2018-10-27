@@ -1,0 +1,72 @@
+New in 2018.10.27:
+	+ voidlinux:
+		+ meta:
+			+ filename: voidlinux-2018.10.27-x86_64.iso
+			+ filesize: 521MB
+			+ sha256sum: eb8726e48d823c3455f64bf2f6752354aafa0754fa0dc178568d4fcbd55c2127
+		+ packages:
+			+ acpi
+			+ aria2
+			+ bash-completion
+			+ binutils
+			+ btrfs-progs
+			+ bzip2
+			+ cdrtools
+			+ crda
+			+ cryptsetup
+			+ curl
+			+ darkhttpd
+			+ dhclient
+			+ dhcpcd
+			+ dialog
+			+ dosfstools
+			+ dvd+rw-tools
+			+ e2fsprogs
+			+ efibootmgr
+			+ enchive
+			+ ethtool
+			+ expect
+			+ git
+			+ gnupg2
+			+ gptfdisk
+			+ grub
+			+ gzip
+			+ haveged
+			+ inetutils
+			+ iproute2
+			+ iputils
+			+ iw
+			+ ldns
+			+ lynx
+			+ net-tools
+			+ nftables
+			+ nmap
+			+ nodejs
+			+ openssh
+			+ pinentry
+			+ proxychains-ng
+			+ psmisc
+			+ rakudo
+			+ rsync
+			+ screen
+			+ sipcalc
+			+ socat
+			+ sshuttle
+			+ tar
+			+ tmux
+			+ tor
+			+ torsocks
+			+ unzip
+			+ vim
+			+ wireguard
+			+ wireless_tools
+			+ wpa_supplicant
+			+ xz
+			+ zip
+			+ zstd
+		+ includes:
+			+ voidfiles @ b0775e6c2e6e753ec2755f14cb278faea2a7aa5e
+			+ voidpkgs  @ 3d90f8fe0309f4f6c08d7ae7800493575f74a8b0
+			+ voidvault @ 10990fe6a8b01409d059c29e5200e8448ae2dc5f
+		+ notes:
+			+ cmdline: void-mklive/mklive.sh -p '$packages' -I /tmp/include -S 1600
