@@ -1,3 +1,50 @@
+New in 2018.10.30:
+	+ voidlinux:
+		+ meta:
+			+ filename: voidlinux-2018.10.30-x86_64.iso
+			+ filesize: 614MB
+			+ sha256sum: ae014fd776ce5c57441759dccb652775f450db077c952a0f9e01789d736b6815
+		+ packages:
+			+ android-tools
+			+ base-devel
+			+ ccrypt
+			+ colordiff
+			+ dnscrypt-proxy
+			+ edbrowse
+			+ elixir
+			+ fd
+			+ fzf
+			+ jq
+			+ just
+			+ kpcli
+			+ libimobiledevice
+			+ man-pages-posix
+			+ mobile-broadband-provider-info
+			+ mosh
+			+ ncdu
+			+ openresolv
+			+ ppp
+			+ pwgen
+			+ python3-icdiff
+			+ qrencode
+			+ rclone
+			+ ripgrep
+			+ rlwrap
+			+ shellcheck
+			+ socklog-void
+			+ the_silver_searcher
+			+ tree
+			+ wvdial
+			+ xtools
+		+ includes:
+			+ voidfiles            @ 3e0e5126a12d5d2b8771e137894c81739de2ccd5
+			+ voidpkgs             @ 441a7919f82380c7d814ad801e12e698c69398f0
+			+ voidvault            @ 4a2cee7fb8b76cdbc62c4feee922f4e137ac5d3a
+			+ hack-captive-portals @ 2d4216d63b1622ece091ebcb7f1588832f290852
+		+ notes:
+			+ cmdline: void-mklive/mklive.sh -p '$packages' -I /tmp/include -S 7000
+			+ include directories are found in /opt on ISO
+
 New in 2018.10.27:
 	+ voidlinux:
 		+ meta:
