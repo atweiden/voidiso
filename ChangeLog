@@ -1,3 +1,22 @@
+New in 2018.11.17:
+	+ voidlinux:
+		+ meta:
+			+ filename: voidlinux-2018.11.17-x86_64.iso
+			+ filesize: 609MB
+			+ sha256sum: f784760085cb899668f438f2276cd22877e1d23cbe323ef2ff6849851a9f087a
+		+ packages:
+			+ bootiso
+			+ pwget
+			- python3-icdiff
+			- sshuttle
+		+ includes:
+			+ voidfiles            @ 1f11aa0410b88f8db069839b3676e17ccfe7fc0c
+			+ voidpkgs             @ 75d352e7fb5ccd444c38128db43bab49932265b8
+			+ voidvault            @ f502bb318f15d876b7968cbdb7d8a244c115f644
+			+ hack-captive-portals @ 2d4216d63b1622ece091ebcb7f1588832f290852
+		+ notes:
+			+ cmdline: void-mklive/mklive.sh -p '$packages' -I /tmp/include -S 7000
+
 New in 2018.10.30:
 	+ voidlinux:
 		+ meta:
