@@ -1,3 +1,18 @@
+New in 2018.11.18:
+	+ voidlinux:
+		+ meta:
+			+ filename: voidlinux-2018.11.18-x86_64.iso
+			+ filesize: 609MB
+			+ sha256sum: 9c65bcd806b63576b374c5a8029a9e7fb86e643b9917110d5f1c67cbb6a34587
+		+ includes:
+			+ voidfiles            @ 1f11aa0410b88f8db069839b3676e17ccfe7fc0c
+			+ voidpkgs             @ 75d352e7fb5ccd444c38128db43bab49932265b8
+			+ voidvault            @ 66703997721267821c920094a53de482261630d4
+			+ hack-captive-portals @ 2d4216d63b1622ece091ebcb7f1588832f290852
+		+ notes:
+			+ cmdline: void-mklive/mklive.sh -p '$packages' -I /tmp/include -S 7000
+			+ include directories now feature files from voidvault resources
+
 New in 2018.11.17:
 	+ voidlinux:
 		+ meta:
