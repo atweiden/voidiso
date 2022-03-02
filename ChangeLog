@@ -30,6 +30,7 @@ New in ????.??.??:
 			+ hashcat-utils
 			+ hdparm
 			+ hostapd
+			+ intel-ucode
 			+ jless
 			+ john
 			+ libgfshare
@@ -49,13 +50,14 @@ New in ????.??.??:
 			+ pinentry-tty
 			+ procs
 			+ pv
+			+ python3
 			+ scapy
 			+ sftpgo
 			+ so
 			+ sqlite
 			+ sss-cli
 			+ stegsnow
-			+ tuntox
+			+ tealdeer
 			+ unbound
 			+ units
 			+ unzip
