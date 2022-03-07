@@ -81,7 +81,7 @@ New in ????.??.??:
 			- the_silver_searcher
 			- wvdial
 		+ notes:
-			+ cmdline: void-mklive/mklive.sh -p '$packages' -I /tmp/include
+			+ cmdline: void-mklive/mklive.sh -p '$packages' -I /tmp/include -r https://alpha.de.repo.voidlinux.org/current/nonfree
 
 New in 2021.07.28:
 	+ voidlinux:
