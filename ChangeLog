@@ -11,8 +11,8 @@ New in ????.??.??:
 		+ packages:
 			+ busybox-huge
 			+ jo
-			+ p7zip
 			+ nvme-cli
+			+ p7zip
 			- jless
 			- neovim
 
