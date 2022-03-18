@@ -6,15 +6,10 @@ unzip
 zip
 zstd
 
-# backup
-borg
-rclone
-rsync
-rtorrent
-
 # development
 base-devel
 bash-completion
+bc
 diffr
 elixir
 fd
@@ -40,8 +35,6 @@ sqlite
 tealdeer
 tmux
 tree
-
-# editor
 vim
 
 # filesystem
@@ -56,6 +49,7 @@ xfsprogs
 jo
 jq
 qrencode
+units
 
 # network
 aerc
@@ -63,6 +57,7 @@ aircrack-ng
 aria2
 bandwhich
 bettercap
+borg
 catgirl
 coWPAtty
 crda
@@ -92,6 +87,9 @@ obfs4proxy
 openresolv
 openssh
 proxychains-ng
+rclone
+rsync
+rtorrent
 scapy
 sftpgo
 socat
@@ -105,12 +103,6 @@ wifish
 wireguard-tools
 wireless_tools
 wpa_supplicant
-
-# productivity
-bc
-moreutils
-pv
-units
 
 # security
 age
@@ -151,12 +143,14 @@ gptfdisk
 grub
 hdparm
 intel-ucode
+moreutils
 ncurses-term
 nvme-cli
 nwipe
 outils
 procs
 psmisc
+pv
 socklog-void
 toggle-ht
 void-release-keys
