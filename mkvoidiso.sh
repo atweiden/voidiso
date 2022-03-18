@@ -110,33 +110,69 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-prepare() {
-  local _services
-
-  # fetch dependencies for mklive.sh
-  sudo xbps-install git liblz4 make squashfs-tools vim
-
-  # fetch void-mklive sources
-  if ! [[ -d "$BUILD_DIR" ]]; then
-    git clone https://github.com/void-linux/void-mklive "$BUILD_DIR"
+git_ensure_latest() {
+  local _git_repository_url
+  local _dest
+  _git_repository_url="$1"
+  _dest="$2"
+  if ! [[ -d "$_dest" ]]; then
+    git clone "$_git_repository_url" "$_dest"
   else
-    pushd "$BUILD_DIR"
-    make clean
+    pushd "$_dest"
+    git reset --hard HEAD
     git pull
     popd
   fi
+}
+
+prepare() {
+  local _depends
+  local _service_dir
+  local _services
+  local _voidfiles
+  local _voidpkgs
+  local _voidvault
+
+  # fetch dependencies for mklive.sh
+  _depends+=" git"
+  _depends+=" liblz4"
+  _depends+=" make"
+  _depends+=" rsync"
+  _depends+=" squashfs-tools"
+  _depends+=" vim"
+  sudo xbps-install $_depends
+
+  # clean up service directory
+  _service_dir="/tmp/include/etc/sv"
+  if [[ -d "$_service_dir" ]]; then
+    rm -rf "$_service_dir"
+  fi
+
+  # fetch void-mklive sources
+  git_ensure_latest https://github.com/void-linux/void-mklive "$BUILD_DIR"
 
   # fetch repos to include
-  git clone https://github.com/atweiden/voidfiles /tmp/include/opt/voidfiles
-  git clone https://github.com/atweiden/voidpkgs /tmp/include/opt/voidpkgs
-  git clone https://github.com/atweiden/voidvault /tmp/include/opt/voidvault
+  _voidfiles="/tmp/include/opt/voidfiles"
+  _voidpkgs="/tmp/include/opt/voidpkgs"
+  _voidvault="/tmp/include/opt/voidvault"
+  git_ensure_latest https://github.com/atweiden/voidfiles "$_voidfiles"
+  git_ensure_latest https://github.com/atweiden/voidpkgs "$_voidpkgs"
+  git_ensure_latest https://github.com/atweiden/voidvault "$_voidvault"
 
-  # copy in etcfiles from atweiden/voidvault
-  find /tmp/include/opt/voidvault/resources -mindepth 1 -maxdepth 1 \
-    -exec cp -R '{}' /tmp/include \;
-
-  # rm shell timeout script on livecd
-  rm -rf /tmp/include/etc/profile.d
+  # copy in etcfiles from atweiden/voidvault except shell timeout script
+  rsync \
+    --recursive \
+    --perms \
+    --exclude='profile.d'
+    --inplace \
+    --human-readable \
+    --progress \
+    --delete \
+    --force \
+    --delete-after \
+    --verbose \
+    "$voidvault/resources/" \
+    /tmp/include
 
   # allow root logins on tty1
   sed \
@@ -179,8 +215,8 @@ prepare() {
   fi
 
   for _service in ${_services[@]}; do
-    mkdir -p "/tmp/include/etc/sv/$_service"
-    touch "/tmp/include/etc/sv/$_service/down"
+    mkdir -p "$service_dir/$_service"
+    touch "$service_dir/$_service/down"
   done
 }
 
@@ -291,6 +327,7 @@ main() {
   cd "$BUILD_DIR"
   prepare
   enable_serial_console
+  make clean
   make
 
   _mklive_opts="-I /tmp/include"
