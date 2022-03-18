@@ -117,7 +117,9 @@ prepare() {
   sudo xbps-install git liblz4 make squashfs-tools vim
 
   # fetch void-mklive sources
-  git clone https://github.com/void-linux/void-mklive
+  if ! [[ -d "$BUILD_DIR" ]]; then
+    git clone https://github.com/void-linux/void-mklive "$BUILD_DIR"
+  fi
 
   # fetch repos to include
   git clone https://github.com/atweiden/voidfiles /tmp/include/opt/voidfiles
