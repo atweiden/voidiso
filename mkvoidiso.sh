@@ -204,20 +204,20 @@ main() {
   export XBPS_REPOSITORY="--repository=$REMOTE --repository=$REMOTE/nonfree"
   # include broadcom-wl-dkms, iwd, patched wpa_supplicant if applicable
   if [[ "$1" =~ broadcom ]]; then
-    sudo --preserve-env=XBPS_REPOSITORY
+    sudo --preserve-env=XBPS_REPOSITORY \
       ./mklive.sh \
         -p "$(grep '^[^#].' packages.txt packages.broadcom.txt)" \
         -I /tmp/include
   # include b43-firmware, iwd, patched wpa_supplicant if applicable
   elif [[ "$1" =~ b43 ]]; then
     pkg_b43_firmware
-    sudo --preserve-env=XBPS_REPOSITORY
+    sudo --preserve-env=XBPS_REPOSITORY \
       ./mklive.sh \
         -p "$(grep '^[^#].' packages.txt packages.b43.txt)" \
         -I /tmp/include
   # just include packages listed in packages.txt
   else
-    sudo --preserve-env=XBPS_REPOSITORY
+    sudo --preserve-env=XBPS_REPOSITORY \
       ./mklive.sh \
         -p "$(grep '^[^#].' packages.txt)" \
         -I /tmp/include
