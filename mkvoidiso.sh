@@ -1,39 +1,114 @@
 #!/bin/bash
 
-readonly MKLIVE="$PWD/void-mklive"
-readonly REMOTE="https://ftp.swin.edu.au/voidlinux/current"
-readonly LOCAL="/tmp/include/opt/voidpkgs"
+# ==============================================================================
+# constants {{{
+
+# path to void-linux/void-mklive
+readonly BUILD_DIR_DEFAULT="$PWD/void-mklive"
+BUILD_DIR="${BUILD_DIR:-$BUILD_DIR_DEFAULT}"
+
+# prioritized remote repository
+readonly XBPS_REPOSITORY_DEFAULT="https://ftp.swin.edu.au/voidlinux/current"
+XBPS_REPOSITORY="${XBPS_REPOSITORY:-$XBPS_REPOSITORY_DEFAULT}"
+
+# path to local repository
+readonly XBPS_REPOSITORY_LOCAL_DEFAULT="/tmp/include/opt/voidpkgs"
+XBPS_REPOSITORY_LOCAL="${XBPS_REPOSITORY_LOCAL:-$XBPS_REPOSITORY_LOCAL_DEFAULT}"
+
+# mkvoidiso version number
+readonly VERSION=0.0.1
+
+# end constants }}}
+# ==============================================================================
+# usage {{{
 
 USAGE() {
-  read -r -d '' _usage_string <<EOF
+  local USAGE
+  read -r -d '' USAGE <<'EOF'
 Usage:
-  mkvoidiso [-h|--help] [<broadcom|b43> [patch_wpa_supplicant]]
+  ./mkvoidiso.sh [-h|--help]
+                 [--repository <url>] [--local-repository <path>]
+                 [--build-dir <path>]
+                 [--with-broadcom-wl-dkms] [--with-b43-firmware]
+                 [--patch-wpa-supplicant]
 
 Options:
-  -h, --help      Show this help text
-
-Arguments:
-  broadcom
-    Include broadcom-wl-dkms and iwd in generated ISO
-  b43
-    Include b43-firmware built locally and iwd in generated ISO (not recommended)
-  patch_wpa_supplicant
-    Include wpa_supplicant built without CONFIG_MESH setting in generated ISO
+  -h, --help                Show this help text
+  -v, --version             Show program version
+  -R, --repository          Prioritized remote repository for stock packages
+  -L, --local-repository    Path to local repository for custom packages
+  -B, --build-dir           Path to local void-linux/void-mklive
+  --patch-wpa-supplicant    Add wpa_supplicant built without CONFIG_MESH
+  --with-b43-firmware       Add b43-firmware built locally and iwd
+  --with-broadcom-wl-dkms   Add broadcom-wl-dkms and iwd
 
 Examples
 
-    # Generate ISO
-    mkvoidiso
+  # Generate ISO
+  ./mkvoidiso.sh
 
-    # Generate ISO with broadcom-wl-dkms and iwd
-    mkvoidiso broadcom
+  # Generate ISO with broadcom-wl-dkms and iwd
+  ./mkvoidiso.sh --with-broadcom-wl-dkms
 
-    # Generate ISO with broadcom-wl-dkms, iwd and patched wpa_supplicant
-    mkvoidiso broadcom patch_wpa_supplicant
+  # Generate ISO with broadcom-wl-dkms, iwd and patched wpa_supplicant
+  ./mkvoidiso.sh --with-broadcom-wl-dkms --patch-wpa-supplicant
 EOF
-
-  echo "$_usage_string"
+  echo "$USAGE"
 }
+
+# end usage }}}
+# ==============================================================================
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    -h|--help)
+      USAGE
+      exit 0
+      ;;
+    -v|--version)
+      echo "$VERSION"
+      exit 0
+      ;;
+    -B|--build-dir)
+      BUILD_DIR="$2"
+      # shift past argument and value
+      shift
+      shift
+      ;;
+    -L|--local-repository)
+      XBPS_REPOSITORY_LOCAL="$2"
+      shift
+      shift
+      ;;
+    -R|--repository)
+      XBPS_REPOSITORY="$2"
+      shift
+      shift
+      ;;
+    --patch-wpa-supplicant)
+      PATCH_WPA_SUPPLICANT=true
+      shift
+      ;;
+    --with-b43-firmware)
+      WITH_B43_FIRMWARE=true
+      shift
+      ;;
+    --with-broadcom-wl-dkms)
+      WITH_BROADCOM_WL_DKMS=true
+      shift
+      ;;
+    -*)
+      # unknown option
+      _usage
+      exit 1
+      ;;
+    *)
+      # unknown command
+      _usage
+      exit 1
+      ;;
+  esac
+done
 
 prepare() {
   local _services
@@ -89,7 +164,7 @@ prepare() {
              'wpa_supplicant'
              'zramen')
 
-  if [[ "$1" =~ broadcom|b43 ]]; then
+  if [[ -n "$WITH_BROADCOM_WL_DKMS" ]] || [[ -n "$WITH_B43_FIRMWARE" ]]; then
     _services+=('dbus')
     # from iwd package
     _services+=('ead')
@@ -165,63 +240,77 @@ enable_serial_console() {
     /tmp/include/etc/securetty
 }
 
+_set_xbps_mirror=
+set_xbps_mirror() {
+  if [[ -z "$_set_xbps_mirror" ]]; then
+    echo XBPS_MIRROR="$XBPS_REPOSITORY" >> etc/conf \
+      && _set_xbps_mirror=true
+  fi
+}
+
+_xbps_src_binary_bootstrap=
+xbps_src_binary_bootstrap() {
+  if [[ -z "$_xbps_src_binary_bootstrap" ]]; then
+    ./xbps-src binary-bootstrap \
+      && _xbps_src_binary_bootstrap=true
+  fi
+}
+
+# void mirrors don't distribute restricted packages like b43-firmware
+pkg_b43_firmware() {
+  pushd "$XBPS_REPOSITORY_LOCAL"
+  set_xbps_mirror
+  echo XBPS_ALLOW_RESTRICTED="yes" >> etc/conf
+  xbps_src_binary_bootstrap
+  ./xbps-src pkg b43-firmware
+  popd
+}
+
 # patch wpa_supplicant for broadcom wireless without resorting to iwd
 # https://bugzilla.redhat.com/show_bug.cgi?id=1703745
 pkg_wpa_supplicant() {
-  pushd "$LOCAL"
-  echo XBPS_MIRROR="$REMOTE" >> etc/conf
-  ./xbps-src binary-bootstrap
+  pushd "$XBPS_REPOSITORY_LOCAL"
+  set_xbps_mirror
+  xbps_src_binary_bootstrap
   sed -i 's/^\(CONFIG_MESH.*\)/#\1/' srcpkgs/wpa_supplicant/files/config
   ./xbps-src pkg wpa_supplicant
   popd
 }
 
-# void mirrors don't distribute restricted packages like b43-firmware
-pkg_b43_firmware() {
-  pushd "$LOCAL"
-  echo XBPS_MIRROR="$REMOTE" >> etc/conf
-  echo XBPS_ALLOW_RESTRICTED="yes" >> etc/conf
-  ./xbps-src binary-bootstrap
-  ./xbps-src pkg b43-firmware
-  popd
-}
-
 main() {
-  cd "$MKLIVE"
+  local _mklive_opts
+  local _package_files
 
-  prepare "$1"
+  cd "$BUILD_DIR"
+  prepare
   enable_serial_console
-
   make
 
-  if [[ "$1" =~ broadcom|b43 ]]; then
-    # patch wpa_supplicant
-    if [[ -n "$2" ]]; then
-      pkg_wpa_supplicant
-    fi
+  _mklive_opts="-I /tmp/include"
+  _package_files="packages.txt"
+
+  if [[ -n "$PATCH_WPA_SUPPLICANT" ]]; then
+    pkg_wpa_supplicant
   fi
 
-  export XBPS_REPOSITORY="--repository=$REMOTE --repository=$REMOTE/nonfree"
-  # include broadcom-wl-dkms, iwd, patched wpa_supplicant if applicable
-  if [[ "$1" =~ broadcom ]]; then
-    sudo --preserve-env=XBPS_REPOSITORY \
-      ./mklive.sh \
-        -p "$(grep '^[^#].' packages.txt packages.broadcom.txt)" \
-        -I /tmp/include
-  # include b43-firmware, iwd, patched wpa_supplicant if applicable
-  elif [[ "$1" =~ b43 ]]; then
+  if [[ -n "$WITH_B43_FIRMWARE" ]]; then
     pkg_b43_firmware
-    sudo --preserve-env=XBPS_REPOSITORY \
-      ./mklive.sh \
-        -p "$(grep '^[^#].' packages.txt packages.b43.txt)" \
-        -I /tmp/include
-  # just include packages listed in packages.txt
-  else
-    sudo --preserve-env=XBPS_REPOSITORY \
-      ./mklive.sh \
-        -p "$(grep '^[^#].' packages.txt)" \
-        -I /tmp/include
+    _package_files+=" packages.b43.txt"
   fi
+
+  if [[ -n "$WITH_BROADCOM_WL_DKMS" ]]; then
+    _package_files+=" packages.broadcom.txt"
+  fi
+
+  if [[ -n "$PATCH_WPA_SUPPLICANT" ]] || [[ -n "$WITH_B43_FIRMWARE" ]]; then
+    _mklive_opts+=" -r $XBPS_REPOSITORY_LOCAL"
+  fi
+
+  export XBPS_REPOSITORY="--repository=$XBPS_REPOSITORY --repository=$XBPS_REPOSITORY/nonfree"
+  sudo --preserve-env=XBPS_REPOSITORY \
+    ./mklive.sh \
+      -p "$(grep '^[^#].' $_package_files)" \
+      $_mklive_opts
 }
 
-main "$@"
+main
