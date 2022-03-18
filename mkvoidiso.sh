@@ -39,7 +39,7 @@ prepare() {
   local _services
 
   # fetch dependencies for mklive.sh
-  sudo xbps-install git liblz4 make squashfs-tools
+  sudo xbps-install git liblz4 make squashfs-tools vim
 
   # fetch void-mklive sources
   git clone https://github.com/void-linux/void-mklive
