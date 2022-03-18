@@ -26,7 +26,7 @@ Examples
     mkvoidiso
 
     # Generate ISO with broadcom-wl-dkms and iwd
-    mkvoidiso broadcom patch_wpa_supplicant
+    mkvoidiso broadcom
 
     # Generate ISO with broadcom-wl-dkms, iwd and patched wpa_supplicant
     mkvoidiso broadcom patch_wpa_supplicant
