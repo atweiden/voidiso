@@ -124,6 +124,7 @@ hashcat-utils
 haveged
 libgfshare
 libgfshare-tools
+orjail
 passphrase2pgp
 pinentry
 pinentry-tty
@@ -153,7 +154,6 @@ intel-ucode
 ncurses-term
 nvme-cli
 nwipe
-orjail
 outils
 procs
 psmisc
