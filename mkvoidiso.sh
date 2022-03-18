@@ -182,6 +182,7 @@ prepare() {
 
   # prevent services from automatically starting on livecd
   _services=('acpid'
+             'adb'
              'busybox-klogd'
              'busybox-ntpd'
              'busybox-syslogd'
@@ -191,18 +192,22 @@ prepare() {
              'dhclient'
              'dhcpcd'
              'dhcpcd-eth0'
+             'dmeventd'
              'dnsmasq'
              'fake-hwclock'
              'haveged'
              'hostapd'
+             'i2pd'
              'iptables'
              'ip6tables'
+             'lvmetad'
              'rsyncd'
              'sftpgo'
              'sshd'
              'tor'
              'unbound'
              'uuidd'
+             'vnstatd'
              'wireguard'
              'wpa_supplicant'
              'zramen')
@@ -330,7 +335,8 @@ main() {
   make clean
   make
 
-  _mklive_opts="-I /tmp/include"
+  _mklive_opts+=" -b base-minimal"
+  _mklive_opts+=" -I /tmp/include"
   _package_files="packages.txt"
 
   if [[ -n "$PATCH_WPA_SUPPLICANT" ]]; then
