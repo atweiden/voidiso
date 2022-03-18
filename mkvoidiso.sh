@@ -119,6 +119,11 @@ prepare() {
   # fetch void-mklive sources
   if ! [[ -d "$BUILD_DIR" ]]; then
     git clone https://github.com/void-linux/void-mklive "$BUILD_DIR"
+  else
+    pushd "$BUILD_DIR"
+    make clean
+    git pull
+    popd
   fi
 
   # fetch repos to include
