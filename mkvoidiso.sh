@@ -31,6 +31,7 @@ Usage:
                  [--build-dir <path>]
                  [--with-broadcom-wl-dkms] [--with-b43-firmware]
                  [--patch-wpa-supplicant]
+                 [--with-custom-packages]
 
 Options:
   -h, --help                Show this help text
@@ -38,9 +39,10 @@ Options:
   -R, --repository          Prioritized remote repository for stock packages
   -L, --local-repository    Path to local repository for custom packages
   -B, --build-dir           Path to local void-linux/void-mklive
-  --patch-wpa-supplicant    Add wpa_supplicant built without CONFIG_MESH
-  --with-b43-firmware       Add b43-firmware built locally and iwd
-  --with-broadcom-wl-dkms   Add broadcom-wl-dkms and iwd
+  --patch-wpa-supplicant    Include wpa_supplicant built without CONFIG_MESH
+  --with-b43-firmware       Include b43-firmware built locally and iwd
+  --with-broadcom-wl-dkms   Include broadcom-wl-dkms and iwd
+  --with-custom-packages    Include packages in packages.custom.txt built locally
 
 Examples
 
@@ -52,6 +54,9 @@ Examples
 
   # Generate ISO with broadcom-wl-dkms, iwd and patched wpa_supplicant
   ./mkvoidiso.sh --with-broadcom-wl-dkms --patch-wpa-supplicant
+
+  # Generate ISO with packages in packages.custom.txt
+  ./mkvoidiso.sh --with-custom-packages
 EOF
   echo "$USAGE"
 }
@@ -95,6 +100,10 @@ while [[ $# -gt 0 ]]; do
       ;;
     --with-broadcom-wl-dkms)
       WITH_BROADCOM_WL_DKMS=true
+      shift
+      ;;
+    --with-custom-packages)
+      WITH_CUSTOM_PACKAGES=true
       shift
       ;;
     -*)
@@ -325,6 +334,15 @@ pkg_wpa_supplicant() {
   popd
 }
 
+pkg_custom() {
+  local package="$1"
+  pushd "$XBPS_REPOSITORY_LOCAL"
+  set_xbps_mirror
+  xbps_src_binary_bootstrap
+  ./xbps-src pkg "$package"
+  popd
+}
+
 main() {
   local _mklive_opts
   local _package_files
@@ -352,7 +370,16 @@ main() {
     _package_files+=" packages.broadcom.txt"
   fi
 
-  if [[ -n "$PATCH_WPA_SUPPLICANT" ]] || [[ -n "$WITH_B43_FIRMWARE" ]]; then
+  if [[ -n "$WITH_CUSTOM_PACKAGES" ]]; then
+    for _package in "$(grep '^[^#].' packages.custom.txt)"; do
+      pkg_custom "$_package"
+    done
+    _package_files+=" packages.custom.txt"
+  fi
+
+  if [[ -n "$WITH_CUSTOM_PACKAGES" ]] \
+  || [[ -n "$PATCH_WPA_SUPPLICANT" ]] \
+  || [[ -n "$WITH_B43_FIRMWARE" ]]; then
     _mklive_opts+=" -r $XBPS_REPOSITORY_LOCAL"
   fi
 
