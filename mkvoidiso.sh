@@ -334,15 +334,6 @@ pkg_wpa_supplicant() {
   popd
 }
 
-pkg_custom() {
-  local package="$1"
-  pushd "$XBPS_REPOSITORY_LOCAL"
-  set_xbps_mirror
-  xbps_src_binary_bootstrap
-  ./xbps-src pkg "$package"
-  popd
-}
-
 main() {
   local _mklive_opts
   local _package_files
@@ -371,9 +362,6 @@ main() {
   fi
 
   if [[ -n "$WITH_CUSTOM_PACKAGES" ]]; then
-    for _package in "$(grep '^[^#].' packages.custom.txt)"; do
-      pkg_custom "$_package"
-    done
     _package_files+=" packages.custom.txt"
   fi
 
