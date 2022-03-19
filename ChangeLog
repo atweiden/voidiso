@@ -11,6 +11,7 @@ New in ????.??.??:
 		+ packages:
 			+ android-tools
 			+ android-udev-rules
+			+ arch-wiki-lite
 			+ busybox-huge
 			+ cpanminus
 			+ cryfs
@@ -37,7 +38,7 @@ New in ????.??.??:
 			- jless
 			- neovim
 		+ notes:
-			+ cmdline: ./mkvoidiso.sh
+			+ cmdline: ./mkvoidiso.sh --with-custom-packages
 
 New in 2022.03.07:
 	+ voidlinux:
