@@ -12,6 +12,7 @@ New in ????.??.??:
 			+ android-tools
 			+ android-udev-rules
 			+ arch-wiki-lite
+			+ bash-completion
 			+ busybox-huge
 			+ cpanminus
 			+ cryfs

@@ -164,6 +164,7 @@ stegsnow
 acpi
 base-files
 bash
+bash-completion
 bootiso
 busybox-huge
 cdrtools
