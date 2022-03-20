@@ -1,2 +1,1 @@
-# all packages listed below must be available in local repository
 arch-wiki-lite
