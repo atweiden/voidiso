@@ -172,7 +172,7 @@ prepare() {
   rsync \
     --recursive \
     --perms \
-    --exclude='profile.d'
+    --exclude='profile.d' \
     --inplace \
     --human-readable \
     --progress \
@@ -229,8 +229,8 @@ prepare() {
   fi
 
   for _service in ${_services[@]}; do
-    mkdir -p "$service_dir/$_service"
-    touch "$service_dir/$_service/down"
+    mkdir -p "$_service_dir/$_service"
+    touch "$_service_dir/$_service/down"
   done
 }
 
@@ -335,11 +335,14 @@ pkg_wpa_supplicant() {
 }
 
 pkg_custom() {
-  local package="$1"
+  local _package
+
+  _package="$1"
+
   pushd "$XBPS_REPOSITORY_LOCAL"
   set_xbps_mirror
   xbps_src_binary_bootstrap
-  ./xbps-src -E pkg "$package"
+  ./xbps-src -E pkg "$_package"
   popd
 }
 
