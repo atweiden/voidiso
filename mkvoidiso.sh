@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# echo each command as it's being run
+set -x
+
 # ==============================================================================
 # constants {{{
 
@@ -382,11 +385,11 @@ main() {
     _mklive_opts+=" -r $XBPS_REPOSITORY_LOCAL"
   fi
 
-  export XBPS_REPOSITORY="--repository=$XBPS_REPOSITORY --repository=$XBPS_REPOSITORY/nonfree"
-  sudo --preserve-env=XBPS_REPOSITORY \
-    ./mklive.sh \
-      -p "$(grep --no-filename '^[^#].' $_package_files)" \
-      $_mklive_opts
+  sudo ./mklive.sh \
+    -p "$(grep --no-filename '^[^#].' $_package_files)" \
+    $_mklive_opts \
+    -r "$XBPS_REPOSITORY" \
+    -r "$XBPS_REPOSITORY/nonfree"
 }
 
 main
