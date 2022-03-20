@@ -370,7 +370,7 @@ main() {
   fi
 
   if [[ -n "$WITH_CUSTOM_PACKAGES" ]]; then
-    for _package in "$(grep '^[^#].' "$DIR/packages.custom.txt")"; do
+    for _package in "$(grep --no-filename '^[^#].' "$DIR/packages.custom.txt")"; do
       pkg_custom "$_package"
     done
     _package_files+=" $DIR/packages.custom.txt"
@@ -385,7 +385,7 @@ main() {
   export XBPS_REPOSITORY="--repository=$XBPS_REPOSITORY --repository=$XBPS_REPOSITORY/nonfree"
   sudo --preserve-env=XBPS_REPOSITORY \
     ./mklive.sh \
-      -p "$(grep '^[^#].' $_package_files)" \
+      -p "$(grep --no-filename '^[^#].' $_package_files)" \
       $_mklive_opts
 }
 
