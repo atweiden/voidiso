@@ -18,7 +18,7 @@ readonly XBPS_REPOSITORY_DEFAULT="https://ftp.swin.edu.au/voidlinux/current"
 XBPS_REPOSITORY="${XBPS_REPOSITORY:-$XBPS_REPOSITORY_DEFAULT}"
 
 # path to local repository
-readonly XBPS_REPOSITORY_LOCAL_DEFAULT="/tmp/include/opt/voidpkgs/hostdir/binpkgs"
+readonly XBPS_REPOSITORY_LOCAL_DEFAULT="/tmp/include/opt/voidpkgs"
 XBPS_REPOSITORY_LOCAL="${XBPS_REPOSITORY_LOCAL:-$XBPS_REPOSITORY_LOCAL_DEFAULT}"
 
 # mkvoidiso version number
@@ -382,7 +382,8 @@ main() {
   if [[ -n "$WITH_CUSTOM_PACKAGES" ]] \
   || [[ -n "$PATCH_WPA_SUPPLICANT" ]] \
   || [[ -n "$WITH_B43_FIRMWARE" ]]; then
-    _mklive_opts+=" -r $XBPS_REPOSITORY_LOCAL"
+    _mklive_opts+=" -r $XBPS_REPOSITORY_LOCAL/hostdir/binpkgs"
+    _mklive_opts+=" -r $XBPS_REPOSITORY_LOCAL/hostdir/binpkgs/nonfree"
   fi
 
   sudo ./mklive.sh \
