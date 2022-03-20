@@ -18,7 +18,7 @@ readonly XBPS_REPOSITORY_DEFAULT="https://ftp.swin.edu.au/voidlinux/current"
 XBPS_REPOSITORY="${XBPS_REPOSITORY:-$XBPS_REPOSITORY_DEFAULT}"
 
 # path to local repository
-readonly XBPS_REPOSITORY_LOCAL_DEFAULT="/tmp/include/opt/voidpkgs"
+readonly XBPS_REPOSITORY_LOCAL_DEFAULT="/tmp/include/opt/voidpkgs/hostdir/binpkgs"
 XBPS_REPOSITORY_LOCAL="${XBPS_REPOSITORY_LOCAL:-$XBPS_REPOSITORY_LOCAL_DEFAULT}"
 
 # mkvoidiso version number
