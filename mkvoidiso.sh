@@ -149,7 +149,6 @@ prepare() {
   _depends+=" git"
   _depends+=" liblz4"
   _depends+=" make"
-  _depends+=" rsync"
   _depends+=" squashfs-tools"
   _depends+=" vim"
   sudo xbps-install $_depends
@@ -171,20 +170,14 @@ prepare() {
   git_ensure_latest https://github.com/atweiden/voidpkgs "$_voidpkgs"
   git_ensure_latest https://github.com/atweiden/voidvault "$_voidvault"
 
-  # copy in etcfiles from atweiden/voidvault except shell timeout script
-  rsync \
-    --recursive \
-    --perms \
-    --exclude='profile.d' \
-    --inplace \
-    --human-readable \
-    --progress \
-    --delete \
-    --force \
-    --delete-after \
-    --verbose \
-    "$_voidvault/resources/" \
-    /tmp/include
+  # copy in etcfiles from atweiden/voidvault
+  find "$_voidvault/resources" -mindepth 1 -maxdepth 1 -exec \
+    basename '{}' \; | while read -r _f; do rm -rf "/tmp/include/$_f"; done
+  find "$_voidvault/resources" -mindepth 1 -maxdepth 1 -exec \
+    cp -R '{}' /tmp/include \;
+
+  # rm shell timeout script on livecd
+  rm -rf /tmp/include/etc/profile.d
 
   # allow root logins on tty1
   sed \
