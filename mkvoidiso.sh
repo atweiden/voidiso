@@ -111,12 +111,12 @@ while [[ $# -gt 0 ]]; do
       ;;
     -*)
       # unknown option
-      _usage
+      USAGE
       exit 1
       ;;
     *)
       # unknown command
-      _usage
+      USAGE
       exit 1
       ;;
   esac
