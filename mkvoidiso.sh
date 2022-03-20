@@ -354,6 +354,7 @@ main() {
 
   _mklive_opts+=" -b base-minimal"
   _mklive_opts+=" -I /tmp/include"
+  _mklive_opts+=" -o $DIR/void.iso"
   _package_files="$DIR/packages.txt"
 
   if [[ -n "$PATCH_WPA_SUPPLICANT" ]]; then
