@@ -180,7 +180,7 @@ prepare() {
     --force \
     --delete-after \
     --verbose \
-    "$voidvault/resources/" \
+    "$_voidvault/resources/" \
     /tmp/include
 
   # allow root logins on tty1
