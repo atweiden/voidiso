@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# echo each command as it's being run
-set -x
-
 # ==============================================================================
 # constants {{{
 
