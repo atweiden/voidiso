@@ -141,7 +141,9 @@ prepare() {
   local _depends
   local _service_dir
   local _services
+  local _void_docs
   local _voidfiles
+  local _voidiso
   local _voidpkgs
   local _voidvault
 
@@ -163,10 +165,14 @@ prepare() {
   git_ensure_latest https://github.com/void-linux/void-mklive "$BUILD_DIR"
 
   # fetch repos to include
+  _void_docs="/tmp/include/opt/void-docs"
   _voidfiles="/tmp/include/opt/voidfiles"
+  _voidiso="/tmp/include/opt/voidiso"
   _voidpkgs="/tmp/include/opt/voidpkgs"
   _voidvault="/tmp/include/opt/voidvault"
+  git_ensure_latest https://github.com/void-linux/void-docs "$_void_docs"
   git_ensure_latest https://github.com/atweiden/voidfiles "$_voidfiles"
+  git_ensure_latest https://github.com/atweiden/voidiso "$_voidiso"
   git_ensure_latest https://github.com/atweiden/voidpkgs "$_voidpkgs"
   git_ensure_latest https://github.com/atweiden/voidvault "$_voidvault"
 
