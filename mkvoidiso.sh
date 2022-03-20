@@ -3,6 +3,9 @@
 # ==============================================================================
 # constants {{{
 
+# path to directory containing this file
+readonly DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
 # path to void-linux/void-mklive
 readonly BUILD_DIR_DEFAULT="$PWD/void-mklive"
 BUILD_DIR="${BUILD_DIR:-$BUILD_DIR_DEFAULT}"
@@ -358,7 +361,7 @@ main() {
 
   _mklive_opts+=" -b base-minimal"
   _mklive_opts+=" -I /tmp/include"
-  _package_files="packages.txt"
+  _package_files="$DIR/packages.txt"
 
   if [[ -n "$PATCH_WPA_SUPPLICANT" ]]; then
     pkg_wpa_supplicant
@@ -366,18 +369,18 @@ main() {
 
   if [[ -n "$WITH_B43_FIRMWARE" ]]; then
     pkg_b43_firmware
-    _package_files+=" packages.b43.txt"
+    _package_files+=" $DIR/packages.b43.txt"
   fi
 
   if [[ -n "$WITH_BROADCOM_WL_DKMS" ]]; then
-    _package_files+=" packages.broadcom.txt"
+    _package_files+=" $DIR/packages.broadcom.txt"
   fi
 
   if [[ -n "$WITH_CUSTOM_PACKAGES" ]]; then
-    for _package in "$(grep '^[^#].' packages.custom.txt)"; do
+    for _package in "$(grep '^[^#].' "$DIR/packages.custom.txt")"; do
       pkg_custom "$_package"
     done
-    _package_files+=" packages.custom.txt"
+    _package_files+=" $DIR/packages.custom.txt"
   fi
 
   if [[ -n "$WITH_CUSTOM_PACKAGES" ]] \
