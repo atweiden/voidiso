@@ -179,8 +179,8 @@ prepare() {
     --inplace \
     --human-readable \
     --progress \
-    --delete-missing-args \
-    --force-delete \
+    --delete \
+    --force \
     --delete-after \
     --verbose \
     "$_voidvault/resources/" \
