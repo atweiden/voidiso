@@ -339,7 +339,7 @@ pkg_custom() {
   pushd "$XBPS_REPOSITORY_LOCAL"
   set_xbps_mirror
   xbps_src_binary_bootstrap
-  ./xbps-src pkg "$package"
+  ./xbps-src -E pkg "$package"
   popd
 }
 
