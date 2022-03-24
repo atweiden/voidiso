@@ -299,6 +299,32 @@ enable_serial_console() {
     /tmp/include/etc/securetty
 }
 
+# credit: leahneukirchen/hrmpf
+include_memtest86plus() {
+  # add memtest86+ to isolinux boot menu
+  sed \
+    -i \
+    -e '/chain/a\ \ \ \ cp -f $SYSLINUX_DATADIR/memdisk "$ISOLINUX_DIR"' \
+    mklive.sh.in
+  vim \
+    -c 'normal gg/^generate_initramfs$%Oif [ "$BOOT_FILES" ]; then cp $BOOT_FILES $BOOT_DIR; fi' \
+    -c 'normal /^while getopts/e' \
+    -c 'normal /:b/ea:B' \
+    -c 'normal /C)OB) BOOT_FILES="$BOOT_FILES $OPTARG";;' \
+    -c 'wq' \
+    mklive.sh.in
+  vim \
+    -c 'normal gg/^LABEL c' \
+    -c 'normal V/^APPENDyP' \
+    -c 'normal /cCmemtest86+' \
+    -c 'normal /^MENU LABEL/e2lCmemtest86+ 5.31b' \
+    -c 'normal /^COM32CKERNEL memdisk' \
+    -c 'normal oINITRD /boot/memtest86+-5.31b.iso' \
+    -c 'normal /^APPEND/e2lCiso' \
+    -c 'wq' \
+    isolinux/isolinux.cfg.in
+}
+
 _set_xbps_mirror=
 set_xbps_mirror() {
   if [[ -z "$_set_xbps_mirror" ]]; then
@@ -355,11 +381,13 @@ main() {
   cd "$BUILD_DIR"
   prepare
   enable_serial_console
+  include_memtest86plus
   make clean
   make
 
   _mklive_opts+=" -b base-minimal"
   _mklive_opts+=" -I /tmp/include"
+  _mklive_opts+=" -B $DIR/resources/memtest86+-5.31b.iso"
   _mklive_opts+=" -o $DIR/void.iso"
   _package_files="$DIR/packages.txt"
 
