@@ -227,9 +227,7 @@ prepare() {
   done
 }
 
-# credit: leahneukirchen/hrmpf
-enable_serial_console() {
-  # add serial console support to grub efi boot menu entries
+enable_serial_console_grub() {
   vim \
     $VIMOPTS \
     -c 'normal gg/^\s\+menuentry' \
@@ -258,7 +256,9 @@ enable_serial_console() {
     echo serial --speed=115200 --unit=0 --word=8 --parity=no --stop=1
   } >> grub/grub_void.cfg.in
 
-  # add serial console support to isolinux boot menu entries
+}
+
+enable_serial_console_isolinux() {
   vim \
     $VIMOPTS \
     -c 'normal gg/^LABEL linux' \
@@ -286,12 +286,25 @@ enable_serial_console() {
     -e 's/vesamenu/menu/' \
     isolinux/isolinux.cfg.in \
     mklive.sh.in
+}
 
-  # allow root logins on ttyS0
+enable_serial_console_securetty() {
   sed \
     -i \
     -e 's/^#\(ttyS0\)/\1/' \
     /tmp/include/etc/securetty
+}
+
+# credit: leahneukirchen/hrmpf
+enable_serial_console() {
+  # add serial console support to grub efi boot menu entries
+  enable_serial_console_grub
+
+  # add serial console support to isolinux boot menu entries
+  enable_serial_console_isolinux
+
+  # allow root logins on ttyS0
+  enable_serial_console_securetty
 }
 
 # credit: leahneukirchen/hrmpf
