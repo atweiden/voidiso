@@ -18,6 +18,9 @@ XBPS_REPOSITORY="${XBPS_REPOSITORY:-$XBPS_REPOSITORY_DEFAULT}"
 readonly XBPS_REPOSITORY_LOCAL_DEFAULT="/tmp/include/opt/voidpkgs"
 XBPS_REPOSITORY_LOCAL="${XBPS_REPOSITORY_LOCAL:-$XBPS_REPOSITORY_LOCAL_DEFAULT}"
 
+# path to file containing custom packages
+readonly CUSTOM_PACKAGE_FILE="$DIR/packages.custom.txt"
+
 # make vim scripting results vimrc-independent
 readonly VIMOPTS="-X -u NONE -U NONE"
 
@@ -35,9 +38,7 @@ Usage:
   ./mkvoidiso.sh [-h|--help]
                  [--repository <url>] [--local-repository <path>]
                  [--build-dir <path>]
-                 [--with-broadcom-wl-dkms] [--with-b43-firmware]
-                 [--patch-wpa-supplicant]
-                 [--with-custom-packages]
+                 [--with-broadcom] [--with-custom-packages]
 
 Options:
   -h, --help                Show this help text
@@ -45,9 +46,7 @@ Options:
   -R, --repository          Prioritized remote repository for stock packages
   -L, --local-repository    Path to local repository for custom packages
   -B, --build-dir           Path to local void-linux/void-mklive
-  --patch-wpa-supplicant    Include wpa_supplicant built without CONFIG_MESH
-  --with-b43-firmware       Include b43-firmware built locally and iwd
-  --with-broadcom-wl-dkms   Include broadcom-wl-dkms and iwd
+  --with-broadcom           Include broadcom-wl-dkms and iwd
   --with-custom-packages    Include packages in packages.custom.txt built locally
 
 Examples
@@ -56,10 +55,7 @@ Examples
   ./mkvoidiso.sh
 
   # Generate ISO with broadcom-wl-dkms and iwd
-  ./mkvoidiso.sh --with-broadcom-wl-dkms
-
-  # Generate ISO with broadcom-wl-dkms, iwd and patched wpa_supplicant
-  ./mkvoidiso.sh --with-broadcom-wl-dkms --patch-wpa-supplicant
+  ./mkvoidiso.sh --with-broadcom
 
   # Generate ISO with packages in packages.custom.txt
   ./mkvoidiso.sh --with-custom-packages
@@ -96,16 +92,8 @@ while [[ $# -gt 0 ]]; do
       shift
       shift
       ;;
-    --patch-wpa-supplicant)
-      PATCH_WPA_SUPPLICANT=true
-      shift
-      ;;
-    --with-b43-firmware)
-      WITH_B43_FIRMWARE=true
-      shift
-      ;;
-    --with-broadcom-wl-dkms)
-      WITH_BROADCOM_WL_DKMS=true
+    --with-broadcom)
+      WITH_BROADCOM=true
       shift
       ;;
     --with-custom-packages)
@@ -226,7 +214,7 @@ prepare() {
              'wpa_supplicant'
              'zramen')
 
-  if [[ -n "$WITH_BROADCOM_WL_DKMS" ]] || [[ -n "$WITH_B43_FIRMWARE" ]]; then
+  if [[ -n "$WITH_BROADCOM" ]]; then
     _services+=('dbus')
     # from iwd package
     _services+=('ead')
@@ -334,6 +322,22 @@ include_memtest86plus() {
     isolinux/isolinux.cfg.in
 }
 
+facilitate_custom_packages() {
+  vim \
+    $VIMOPTS \
+    -c 'normal gg/\s\+mount_pseudofso    # install custom packages first' \
+    -c 'normal o    LANG=C XBPS_ARCH=$BASE_ARCH "${XBPS_INSTALL_CMD}" -U -r "$ROOTFS" \' \
+    -c 'normal o        ${XBPS_REPOSITORY_LOCAL} -c "$XBPS_CACHEDIR" -y $PACKAGE_LIST_CUSTOM' \
+    -c 'normal o    [ $? -ne 0 ] && die "Failed to install local repo custom packages $PACKAGE_LIST_CUSTOM"' \
+    -c 'normal /^while getopts/e' \
+    -c 'normal /:r/ea:l' \
+    -c 'normal /:p/ea:P' \
+    -c 'normal /r)o        l) XBPS_REPOSITORY_LOCAL="--repository=$OPTARG $XBPS_REPOSITORY_LOCAL";;' \
+    -c 'normal /p)o        P) PACKAGE_LIST_CUSTOM="$OPTARG";;' \
+    -c 'wq' \
+    mklive.sh.in
+}
+
 _set_xbps_mirror=
 set_xbps_mirror() {
   if [[ -z "$_set_xbps_mirror" ]]; then
@@ -348,32 +352,6 @@ xbps_src_binary_bootstrap() {
     ./xbps-src binary-bootstrap \
       && _xbps_src_binary_bootstrap=true
   fi
-}
-
-# void mirrors don't distribute restricted packages like b43-firmware
-pkg_b43_firmware() {
-  pushd "$XBPS_REPOSITORY_LOCAL"
-  set_xbps_mirror
-  echo XBPS_ALLOW_RESTRICTED="yes" >> etc/conf
-  xbps_src_binary_bootstrap
-  ./xbps-src pkg b43-firmware
-  popd
-}
-
-# patch wpa_supplicant for broadcom wireless without resorting to iwd
-# https://bugzilla.redhat.com/show_bug.cgi?id=1703745
-pkg_wpa_supplicant() {
-  pushd "$XBPS_REPOSITORY_LOCAL"
-  set_xbps_mirror
-  xbps_src_binary_bootstrap
-  sed -i 's/^\(CONFIG_MESH.*\)/#\1/' srcpkgs/wpa_supplicant/files/config
-  ./xbps-src -E pkg wpa_supplicant
-  popd
-}
-
-# ensure wpa_supplicant doesn't exist in void-linux/void-mklive cache
-rm_wpa_supplicant_from_cache() {
-  sudo rm -f xbps-cachedir-*/wpa_supplicant*.xbps*
 }
 
 pkg_custom() {
@@ -405,43 +383,24 @@ main() {
   _mklive_opts+=" -o $DIR/void.iso"
   _package_files="$DIR/packages.txt"
 
-  if [[ -n "$PATCH_WPA_SUPPLICANT" ]]; then
-    rm_wpa_supplicant_from_cache
-    pkg_wpa_supplicant
-  fi
-
-  if [[ -n "$WITH_B43_FIRMWARE" ]]; then
-    pkg_b43_firmware
-    _package_files+=" $DIR/packages.b43.txt"
-  fi
-
-  if [[ -n "$WITH_BROADCOM_WL_DKMS" ]]; then
+  if [[ -n "$WITH_BROADCOM" ]]; then
     _package_files+=" $DIR/packages.broadcom.txt"
   fi
 
   if [[ -n "$WITH_CUSTOM_PACKAGES" ]]; then
-    for _package in "$(grep --no-filename '^[^#].' "$DIR/packages.custom.txt")"; do
+    for _package in "$(grep --no-filename '^[^#].' "$CUSTOM_PACKAGE_FILE")"; do
       pkg_custom "$_package"
     done
-    _package_files+=" $DIR/packages.custom.txt"
-  fi
-
-  # void-linux/void-mklive -r cmdline flag prepends not appends repository
-  if [[ -n "$WITH_CUSTOM_PACKAGES" ]] \
-  || [[ -n "$PATCH_WPA_SUPPLICANT" ]] \
-  || [[ -n "$WITH_B43_FIRMWARE" ]]; then
-    _mklive_opts+=" -r $XBPS_REPOSITORY_LOCAL/hostdir/binpkgs"
-    _mklive_opts+=" -r $XBPS_REPOSITORY_LOCAL/hostdir/binpkgs/nonfree"
-    _mklive_opts+=" -r $XBPS_REPOSITORY"
-    _mklive_opts+=" -r $XBPS_REPOSITORY/nonfree"
-  else
-    _mklive_opts+=" -r $XBPS_REPOSITORY_LOCAL/hostdir/binpkgs"
-    _mklive_opts+=" -r $XBPS_REPOSITORY_LOCAL/hostdir/binpkgs/nonfree"
+    _mklive_opts+=" -P $(grep --no-filename '^[^#].' "$CUSTOM_PACKAGE_FILE")"
+    _mklive_opts+=" -l $XBPS_REPOSITORY_LOCAL/hostdir/binpkgs"
+    _mklive_opts+=" -l $XBPS_REPOSITORY_LOCAL/hostdir/binpkgs/nonfree"
   fi
 
   sudo ./mklive.sh \
     -p "$(grep --no-filename '^[^#].' $_package_files)" \
-    $_mklive_opts
+    $_mklive_opts \
+    -r "$XBPS_REPOSITORY" \
+    -r "$XBPS_REPOSITORY/nonfree"
 }
 
 main
