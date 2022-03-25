@@ -18,6 +18,9 @@ XBPS_REPOSITORY="${XBPS_REPOSITORY:-$XBPS_REPOSITORY_DEFAULT}"
 readonly XBPS_REPOSITORY_LOCAL_DEFAULT="/tmp/include/opt/voidpkgs"
 XBPS_REPOSITORY_LOCAL="${XBPS_REPOSITORY_LOCAL:-$XBPS_REPOSITORY_LOCAL_DEFAULT}"
 
+# make vim scripting results vimrc-independent
+readonly VIMOPTS="-X -u NONE -U NONE"
+
 # mkvoidiso version number
 readonly VERSION=0.0.1
 
@@ -240,9 +243,7 @@ prepare() {
 enable_serial_console() {
   # add serial console support to grub efi boot menu entries
   vim \
-    -X \
-    -u NONE \
-    -U NONE \
+    $VIMOPTS \
     -c 'normal gg/^\s\+menuentry' \
     -c 'normal V$%y' \
     -c 'normal /^\s\+}/ep' \
@@ -251,9 +252,7 @@ enable_serial_console() {
     -c 'wq' \
     grub/grub_void.cfg.in
   vim \
-    -X \
-    -u NONE \
-    -U NONE \
+    $VIMOPTS \
     -c 'normal G?^\s\+menuentry' \
     -c 'normal V$%yP' \
     -c 'normal G?^\s\+menuentry' \
@@ -273,9 +272,7 @@ enable_serial_console() {
 
   # add serial console support to isolinux boot menu entries
   vim \
-    -X \
-    -u NONE \
-    -U NONE \
+    $VIMOPTS \
     -c 'normal gg/^LABEL linux' \
     -c 'normal V/^APPENDyP' \
     -c 'normal j/^LABEL linux/eatext' \
@@ -284,9 +281,7 @@ enable_serial_console() {
     -c 'wq' \
     isolinux/isolinux.cfg.in
   vim \
-    -X \
-    -u NONE \
-    -U NONE \
+    $VIMOPTS \
     -c 'normal G?^LABEL linuxram' \
     -c 'normal V/^APPENDyP' \
     -c 'normal j/^LABEL linuxram/eatext' \
@@ -319,9 +314,7 @@ include_memtest86plus() {
     -e '/chain/a\ \ \ \ cp -f $SYSLINUX_DATADIR/memdisk "$ISOLINUX_DIR"' \
     mklive.sh.in
   vim \
-    -X \
-    -u NONE \
-    -U NONE \
+    $VIMOPTS \
     -c 'normal gg/^generate_initramfs$%O    if [ "$BOOT_FILES" ]; then cp $BOOT_FILES $BOOT_DIR; fi' \
     -c 'normal /^while getopts/e' \
     -c 'normal /:b/ea:B' \
@@ -329,9 +322,7 @@ include_memtest86plus() {
     -c 'wq' \
     mklive.sh.in
   vim \
-    -X \
-    -u NONE \
-    -U NONE \
+    $VIMOPTS \
     -c 'normal gg/^LABEL c' \
     -c 'normal V/^APPENDyP' \
     -c 'normal /cCmemtest86+' \
