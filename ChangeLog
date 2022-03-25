@@ -17,6 +17,7 @@ New in ????.??.??:
 			+ grub-i386-efi
 			+ grub-x86_64-efi
 		+ notes:
+			+ added memtest86+-5.31b iso boot entry
 			+ cmdline: ./mkvoidiso.sh --with-custom-packages
 
 New in 2022.03.20:
