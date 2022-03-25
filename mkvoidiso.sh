@@ -374,6 +374,7 @@ main() {
   prepare
   enable_serial_console
   include_memtest86plus
+  facilitate_custom_packages
   make clean
   make
 
