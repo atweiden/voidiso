@@ -371,6 +371,11 @@ pkg_wpa_supplicant() {
   popd
 }
 
+# ensure wpa_supplicant doesn't exist in void-linux/void-mklive cache
+rm_wpa_supplicant_from_cache() {
+  rm -f xbps-cachedir-*/wpa_supplicant*.xbps*
+}
+
 pkg_custom() {
   local _package
 
@@ -401,6 +406,7 @@ main() {
   _package_files="$DIR/packages.txt"
 
   if [[ -n "$PATCH_WPA_SUPPLICANT" ]]; then
+    rm_wpa_supplicant_from_cache
     pkg_wpa_supplicant
   fi
 
