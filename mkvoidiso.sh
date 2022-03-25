@@ -379,6 +379,8 @@ main() {
   make
 
   _mklive_opts+=" -b base-minimal"
+  _mklive_opts+=" -r $XBPS_REPOSITORY"
+  _mklive_opts+=" -r $XBPS_REPOSITORY/nonfree"
   _mklive_opts+=" -I /tmp/include"
   _mklive_opts+=" -B $DIR/resources/memtest86+-5.31b.iso"
   _mklive_opts+=" -o $DIR/void.iso"
@@ -392,16 +394,17 @@ main() {
     for _package in "$(grep --no-filename '^[^#].' "$CUSTOM_PACKAGE_FILE")"; do
       pkg_custom "$_package"
     done
-    _mklive_opts+=" -P $(grep --no-filename '^[^#].' "$CUSTOM_PACKAGE_FILE")"
-    _mklive_opts+=" -l $XBPS_REPOSITORY_LOCAL/hostdir/binpkgs"
-    _mklive_opts+=" -l $XBPS_REPOSITORY_LOCAL/hostdir/binpkgs/nonfree"
+    sudo ./mklive.sh \
+      -p "$(grep --no-filename '^[^#].' $_package_files)" \
+      -P "$(grep --no-filename '^[^#].' $CUSTOM_PACKAGE_FILE)" \
+      $_mklive_opts \
+      -l "$XBPS_REPOSITORY_LOCAL/hostdir/binpkgs" \
+      -l "$XBPS_REPOSITORY_LOCAL/hostdir/binpkgs/nonfree"
+  else
+    sudo ./mklive.sh \
+      -p "$(grep --no-filename '^[^#].' $_package_files)" \
+      $_mklive_opts
   fi
-
-  sudo ./mklive.sh \
-    -p "$(grep --no-filename '^[^#].' $_package_files)" \
-    $_mklive_opts \
-    -r "$XBPS_REPOSITORY" \
-    -r "$XBPS_REPOSITORY/nonfree"
 }
 
 main
