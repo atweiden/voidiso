@@ -394,12 +394,12 @@ main() {
     for _package in "$(grep --no-filename '^[^#].' "$CUSTOM_PACKAGE_FILE")"; do
       pkg_custom "$_package"
     done
+    _mklive_opts+=" -l $XBPS_REPOSITORY_LOCAL/hostdir/binpkgs"
+    _mklive_opts+=" -l $XBPS_REPOSITORY_LOCAL/hostdir/binpkgs/nonfree"
     sudo ./mklive.sh \
       -p "$(grep --no-filename '^[^#].' $_package_files)" \
       -P "$(grep --no-filename '^[^#].' $CUSTOM_PACKAGE_FILE)" \
-      $_mklive_opts \
-      -l "$XBPS_REPOSITORY_LOCAL/hostdir/binpkgs" \
-      -l "$XBPS_REPOSITORY_LOCAL/hostdir/binpkgs/nonfree"
+      $_mklive_opts
   else
     sudo ./mklive.sh \
       -p "$(grep --no-filename '^[^#].' $_package_files)" \
