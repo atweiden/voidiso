@@ -373,7 +373,7 @@ pkg_wpa_supplicant() {
 
 # ensure wpa_supplicant doesn't exist in void-linux/void-mklive cache
 rm_wpa_supplicant_from_cache() {
-  rm -f xbps-cachedir-*/wpa_supplicant*.xbps*
+  sudo rm -f xbps-cachedir-*/wpa_supplicant*.xbps*
 }
 
 pkg_custom() {
