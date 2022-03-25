@@ -340,7 +340,7 @@ facilitate_custom_packages() {
     $VIMOPTS \
     -c 'normal gg/\s\+mount_pseudofso    # install custom packages first' \
     -c 'normal o    LANG=C XBPS_ARCH=$BASE_ARCH "${XBPS_INSTALL_CMD}" -U -r "$ROOTFS" \' \
-    -c 'normal o        ${XBPS_REPOSITORY_LOCAL} ${XBPS_REPOSITORY} --ignore-conf-repos -c "$XBPS_CACHEDIR" -y $PACKAGE_LIST_CUSTOM' \
+    -c 'normal o        ${XBPS_REPOSITORY_LOCAL} -i -c "$XBPS_REPOSITORY_LOCAL/hostdir/repocache-$BASE_ARCH" -y $PACKAGE_LIST_CUSTOM' \
     -c 'normal o    [ $? -ne 0 ] && die "Failed to install local repo custom packages $PACKAGE_LIST_CUSTOM"' \
     -c 'normal /^while getopts/e' \
     -c 'normal /:r/ea:l' \
