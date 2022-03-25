@@ -367,7 +367,7 @@ pkg_wpa_supplicant() {
   set_xbps_mirror
   xbps_src_binary_bootstrap
   sed -i 's/^\(CONFIG_MESH.*\)/#\1/' srcpkgs/wpa_supplicant/files/config
-  ./xbps-src pkg wpa_supplicant
+  ./xbps-src -E pkg wpa_supplicant
   popd
 }
 
