@@ -240,6 +240,9 @@ prepare() {
 enable_serial_console() {
   # add serial console support to grub efi boot menu entries
   vim \
+    -X \
+    -u NONE \
+    -U NONE \
     -c 'normal gg/^\s\+menuentry' \
     -c 'normal V$%y' \
     -c 'normal /^\s\+}/ep' \
@@ -248,6 +251,9 @@ enable_serial_console() {
     -c 'wq' \
     grub/grub_void.cfg.in
   vim \
+    -X \
+    -u NONE \
+    -U NONE \
     -c 'normal G?^\s\+menuentry' \
     -c 'normal V$%yP' \
     -c 'normal G?^\s\+menuentry' \
@@ -267,6 +273,9 @@ enable_serial_console() {
 
   # add serial console support to isolinux boot menu entries
   vim \
+    -X \
+    -u NONE \
+    -U NONE \
     -c 'normal gg/^LABEL linux' \
     -c 'normal V/^APPENDyP' \
     -c 'normal j/^LABEL linux/eatext' \
@@ -275,6 +284,9 @@ enable_serial_console() {
     -c 'wq' \
     isolinux/isolinux.cfg.in
   vim \
+    -X \
+    -u NONE \
+    -U NONE \
     -c 'normal G?^LABEL linuxram' \
     -c 'normal V/^APPENDyP' \
     -c 'normal j/^LABEL linuxram/eatext' \
@@ -307,13 +319,19 @@ include_memtest86plus() {
     -e '/chain/a\ \ \ \ cp -f $SYSLINUX_DATADIR/memdisk "$ISOLINUX_DIR"' \
     mklive.sh.in
   vim \
-    -c 'normal gg/^generate_initramfs$%Oif [ "$BOOT_FILES" ]; then cp $BOOT_FILES $BOOT_DIR; fi' \
+    -X \
+    -u NONE \
+    -U NONE \
+    -c 'normal gg/^generate_initramfs$%O    if [ "$BOOT_FILES" ]; then cp $BOOT_FILES $BOOT_DIR; fi' \
     -c 'normal /^while getopts/e' \
     -c 'normal /:b/ea:B' \
-    -c 'normal /C)OB) BOOT_FILES="$BOOT_FILES $OPTARG";;' \
+    -c 'normal /C)O        B) BOOT_FILES="$BOOT_FILES $OPTARG";;' \
     -c 'wq' \
     mklive.sh.in
   vim \
+    -X \
+    -u NONE \
+    -U NONE \
     -c 'normal gg/^LABEL c' \
     -c 'normal V/^APPENDyP' \
     -c 'normal /cCmemtest86+' \
