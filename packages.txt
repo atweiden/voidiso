@@ -32,6 +32,7 @@ lua54
 luarocks-lua51
 luarocks-lua53
 luarocks-lua54
+man-db
 man-pages
 man-pages-posix
 mercurial
@@ -149,6 +150,7 @@ hashcat-utils
 haveged
 libgfshare
 libgfshare-tools
+minisign
 oath-toolkit
 openssl
 orjail
@@ -202,7 +204,6 @@ ncurses
 ncurses-term
 nvme-cli
 nwipe
-outils
 pciutils
 procps-ng
 procs
