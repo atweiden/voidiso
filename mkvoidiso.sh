@@ -426,18 +426,22 @@ main() {
     _package_files+=" $DIR/packages.custom.txt"
   fi
 
+  # void-linux/void-mklive -r cmdline flag prepends not appends repository
   if [[ -n "$WITH_CUSTOM_PACKAGES" ]] \
   || [[ -n "$PATCH_WPA_SUPPLICANT" ]] \
   || [[ -n "$WITH_B43_FIRMWARE" ]]; then
+    _mklive_opts+=" -r $XBPS_REPOSITORY_LOCAL/hostdir/binpkgs"
+    _mklive_opts+=" -r $XBPS_REPOSITORY_LOCAL/hostdir/binpkgs/nonfree"
+    _mklive_opts+=" -r $XBPS_REPOSITORY"
+    _mklive_opts+=" -r $XBPS_REPOSITORY/nonfree"
+  else
     _mklive_opts+=" -r $XBPS_REPOSITORY_LOCAL/hostdir/binpkgs"
     _mklive_opts+=" -r $XBPS_REPOSITORY_LOCAL/hostdir/binpkgs/nonfree"
   fi
 
   sudo ./mklive.sh \
     -p "$(grep --no-filename '^[^#].' $_package_files)" \
-    $_mklive_opts \
-    -r "$XBPS_REPOSITORY" \
-    -r "$XBPS_REPOSITORY/nonfree"
+    $_mklive_opts
 }
 
 main
