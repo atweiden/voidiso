@@ -404,7 +404,7 @@ main() {
   fi
 
   if [[ -n "$WITH_CUSTOM_PACKAGES" ]]; then
-    for _package in "$(grep --no-filename '^[^#].' "$CUSTOM_PACKAGE_FILE")"; do
+    for _package in $(grep --no-filename '^[^#].' "$CUSTOM_PACKAGE_FILE"); do
       pkg_custom "$_package"
     done
     _mklive_opts+=" -l $XBPS_REPOSITORY_LOCAL/hostdir/binpkgs"
