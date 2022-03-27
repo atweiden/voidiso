@@ -139,11 +139,11 @@ wvdial
 
 # security
 age
+bubblewrap
 cryfs
 cryptsetup
 enchive
 exiftool
-firejail
 gnupg
 hashcat
 hashcat-utils
@@ -151,6 +151,7 @@ haveged
 libgfshare
 libgfshare-tools
 minisign
+nsjail
 oath-toolkit
 openssl
 orjail
