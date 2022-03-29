@@ -32,9 +32,9 @@ lua54
 luarocks-lua51
 luarocks-lua53
 luarocks-lua54
-man-db
 man-pages
 man-pages-posix
+mdocml
 mercurial
 nodejs
 nvi
