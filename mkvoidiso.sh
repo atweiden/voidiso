@@ -208,6 +208,7 @@ prepare() {
              'sshd'
              'tor'
              'unbound'
+             'usbguard'
              'uuidd'
              'vnstatd'
              'wireguard'
