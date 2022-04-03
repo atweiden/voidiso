@@ -102,6 +102,7 @@ mosh
 net-tools
 nethogs
 nftables
+nyx
 obfs4proxy
 openresolv
 openssh
@@ -162,6 +163,7 @@ pwgen
 pwget
 sss-cli
 stegsnow
+usbguard
 
 # system
 acpi
