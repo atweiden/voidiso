@@ -256,7 +256,6 @@ enable_serial_console_grub() {
     echo insmod serial
     echo serial --speed=115200 --unit=0 --word=8 --parity=no --stop=1
   } >> grub/grub_void.cfg.in
-
 }
 
 enable_serial_console_isolinux() {
