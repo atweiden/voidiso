@@ -41,13 +41,13 @@ Usage:
                  [--with-broadcom] [--with-custom-packages]
 
 Options:
-  -h, --help                Show this help text
-  -v, --version             Show program version
-  -R, --repository          Prioritized remote repository for stock packages
-  -L, --local-repository    Path to local repository for custom packages
-  -B, --build-dir           Path to local void-linux/void-mklive
-  --with-broadcom           Include broadcom-wl-dkms and iwd
-  --with-custom-packages    Include packages in packages.custom.txt built locally
+  -h, --help                      Show this help text
+  -v, --version                   Show program version
+  -R, --repository <url>          Prioritized remote repository for stock packages
+  -L, --local-repository <path>   Path to local repository for custom packages
+  -B, --build-dir <path>          Path to local void-linux/void-mklive
+  --with-broadcom                 Include broadcom-wl-dkms and iwd
+  --with-custom-packages          Include packages in packages.custom.txt built locally
 
 Examples
 
