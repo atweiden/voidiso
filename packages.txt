@@ -1,8 +1,8 @@
 # archival
+7zip
 bzip2
 gzip
 lz4
-p7zip
 tar
 unzip
 xz
