@@ -327,9 +327,9 @@ include_memtest86plus() {
     -c 'normal gg/^LABEL c' \
     -c 'normal V/^APPENDyP' \
     -c 'normal /cCmemtest86+' \
-    -c 'normal /^MENU LABEL/e2lCmemtest86+ 5.31b' \
+    -c 'normal /^MENU LABEL/e2lCmemtest86+ 6.01 (64-bit)' \
     -c 'normal /^COM32CKERNEL memdisk' \
-    -c 'normal oINITRD /boot/memtest86+-5.31b.iso' \
+    -c 'normal oINITRD /boot/mt86plus_6.01_64.iso' \
     -c 'normal /^APPEND/e2lCiso' \
     -c 'wq' \
     isolinux/isolinux.cfg.in
@@ -395,7 +395,7 @@ main() {
   _mklive_opts+=" -r $XBPS_REPOSITORY"
   _mklive_opts+=" -r $XBPS_REPOSITORY/nonfree"
   _mklive_opts+=" -I /tmp/include"
-  _mklive_opts+=" -B $DIR/resources/memtest86+-5.31b.iso"
+  _mklive_opts+=" -B $DIR/resources/mt86plus_6.01_64.iso"
   _mklive_opts+=" -o $DIR/void.iso"
   _package_files="$DIR/packages.txt"
 

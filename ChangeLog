@@ -14,6 +14,7 @@ New in 2023.??.??:
 			+ 7zip
 			- p7zip
 		+ notes:
+			+ replaced memtest86+-5.31b with memtest86+-6.01
 			+ cmdline: ./mkvoidiso.sh --with-custom-packages
 
 New in 2022.04.19:
