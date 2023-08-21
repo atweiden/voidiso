@@ -57,7 +57,7 @@ btrfs-progs
 device-mapper
 dosfstools
 e2fsprogs
-exfat-utils
+exfatprogs
 lvm2
 nilfs-utils
 xfsprogs
