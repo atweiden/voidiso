@@ -232,18 +232,12 @@ enable_serial_console_grub() {
   vim \
     $VIMOPTS \
     -c 'normal gg/^\s\+menuentry' \
-    -c 'normal V$%y' \
-    -c 'normal /^\s\+}/ep' \
-    -c 'normal 0/(@@ARCH@@)/ea (Serial)' \
+    -c 'normal Vn$%yP' \
+    -c 'normal 0/(@@ARCH@@)/enna (Serial)' \
+    -c 'normal /--id "\w\+/eatext' \
     -c 'normal /@@BOOT_CMDLINE@@/ea console=tty0 console=ttyS0,115200n8' \
-    -c 'wq' \
-    grub/grub_void.cfg.in
-  vim \
-    $VIMOPTS \
-    -c 'normal G?^\s\+menuentry' \
-    -c 'normal V$%yP' \
-    -c 'normal G?^\s\+menuentry' \
-    -c 'normal 0/(RAM)/ea (Serial)' \
+    -c 'normal 0/(@@ARCH@@)/ea (Serial)' \
+    -c 'normal /--id "\w\+/eatext' \
     -c 'normal /@@BOOT_CMDLINE@@/ea console=tty0 console=ttyS0,115200n8' \
     -c 'wq' \
     grub/grub_void.cfg.in
@@ -285,7 +279,7 @@ enable_serial_console_isolinux() {
     -i \
     -e 's/vesamenu/menu/' \
     isolinux/isolinux.cfg.in \
-    mklive.sh.in
+    mklive.sh
 }
 
 enable_serial_console_securetty() {
@@ -313,7 +307,7 @@ include_memtest86plus() {
   sed \
     -i \
     -e '/chain/a\ \ \ \ cp -f $SYSLINUX_DATADIR/memdisk "$ISOLINUX_DIR"' \
-    mklive.sh.in
+    mklive.sh
   vim \
     $VIMOPTS \
     -c 'normal gg/^generate_initramfs$%O    if [ "$BOOT_FILES" ]; then cp $BOOT_FILES $BOOT_DIR; fi' \
@@ -321,7 +315,7 @@ include_memtest86plus() {
     -c 'normal /:b/ea:B' \
     -c 'normal /C)O        B) BOOT_FILES="$BOOT_FILES $OPTARG";;' \
     -c 'wq' \
-    mklive.sh.in
+    mklive.sh
   vim \
     $VIMOPTS \
     -c 'normal gg/^LABEL c' \
@@ -348,7 +342,7 @@ facilitate_custom_packages() {
     -c 'normal /r)o        l) XBPS_REPOSITORY_LOCAL="--repository=$OPTARG $XBPS_REPOSITORY_LOCAL";;' \
     -c 'normal /p)o        P) PACKAGE_LIST_CUSTOM="$OPTARG";;' \
     -c 'wq' \
-    mklive.sh.in
+    mklive.sh
 }
 
 _set_xbps_mirror=
