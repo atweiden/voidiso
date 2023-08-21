@@ -15,7 +15,7 @@ New in 2023.??.??:
 			- p7zip
 			- wireless_tools
 		+ notes:
-			+ replaced memtest86+-5.31b with memtest86+-6.01
+			+ replaced memtest86+-5.31b with memtest86+-6.20
 			+ cmdline: ./mkvoidiso.sh --with-custom-packages
 
 New in 2022.04.19:
