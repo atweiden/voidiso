@@ -11,12 +11,14 @@ zlib
 zstd
 
 # development
+LuaJIT
 base-devel
 bc
 cpanminus
 diffr
 diffutils
 elixir
+exa
 fd
 findutils
 fzf
