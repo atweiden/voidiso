@@ -385,7 +385,7 @@ main() {
   make clean
   make
 
-  _mklive_opts+=" -b base-minimal"
+  _mklive_opts+=" -b base-container"
   _mklive_opts+=" -r $XBPS_REPOSITORY"
   _mklive_opts+=" -r $XBPS_REPOSITORY/nonfree"
   _mklive_opts+=" -I /tmp/include"
