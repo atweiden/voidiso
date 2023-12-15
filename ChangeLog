@@ -13,6 +13,7 @@ New in ????.??.??:
 		+ packages:
 			+ LuaJIT
 			+ eza
+			- crda
 		+ notes:
 			+ cmdline: ./mkvoidiso.sh --with-custom-packages
 

@@ -80,7 +80,6 @@ borg
 ca-certificates
 catgirl
 coWPAtty
-crda
 create_ap
 curl
 darkhttpd
